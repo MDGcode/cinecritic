@@ -2,9 +2,37 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Search } from "lucide-react";
-
+import { UserAuth } from "../context/AuthContext"; // Import UserAuth
+import Image from "next/image";
+import DefaultAvatar from "../images/default_avatar.webp";
+import { useEffect, useState } from "react";
+import LoadingSpinner from "./loading-spinner";
 export default function Navbar() {
   const pathname = usePathname();
+  const { user, googleSignIn, logOut } = UserAuth();
+  const [loading, setLoading] = useState(true);
+
+  const handleSignIn = async () => {
+    try {
+      await googleSignIn();
+    } catch (err) {
+      console.error(err);
+    }
+  };
+  const handleSignOut = async () => {
+    try {
+      await logOut();
+    } catch (err) {
+      console.error(err);
+    }
+  };
+  useEffect(() => {
+    const checkAuthentication = async () => {
+      await new Promise((resolve) => setTimeout(resolve, 50));
+      setLoading(false);
+    };
+    checkAuthentication();
+  }, [user]);
 
   return (
     <nav className="flex items-center justify-between p-4 bg-gray-800 text-white">
@@ -45,6 +73,29 @@ export default function Navbar() {
         />
         <Search className="w-5 h-5" />
       </div>
+      {loading ? (
+        <LoadingSpinner />
+      ) : !user ? (
+        <div onClick={handleSignIn} className=" cursor-pointer">
+          Login
+        </div>
+      ) : (
+        <div className="flex gap-4 items-center">
+          <div className="flex items-center gap-2">
+            <Image
+              width={32}
+              height={32}
+              className="w-8 h-8 rounded-full"
+              src={user.photoURL || DefaultAvatar}
+              alt="user photo"
+            />
+            <div className="text-white">{user.displayName}</div>
+          </div>
+          <div onClick={handleSignOut} className="cursor-pointer">
+            Logout
+          </div>
+        </div>
+      )}
     </nav>
   );
 }
