@@ -282,7 +282,7 @@ async function MovieContent({ id }: { id: string }) {
 }
 
 export default async function Page({ params }: { params: { id: string } }) {
-  const { id } = await params; // Explicitly destructure params
+  const { id } = params;
   return (
     <Suspense fallback={<LoadingState />}>
       <MovieContent id={id} />
