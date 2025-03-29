@@ -6,9 +6,28 @@
 
 generator client {
   provider = "prisma-client-js"
+  binaryTargets = ["native", "rhel-openssl-1.0.x", "debian-openssl-3.0.x"] 
 }
 
 datasource db {
-  provider = "mysql"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+model Review {
+  review_id Int @id @default(autoincrement())
+  movie_id  Int
+  user_id   String
+  rating    Int
+  title     String
+  content   String
+  comments  Comment[]
+}
+
+model Comment {
+  comment_id Int @id @default(autoincrement())
+  user_id    String
+  review_id  Int
+  comment    String
+  review     Review @relation(fields: [review_id], references: [review_id], onDelete: Cascade)
 }
