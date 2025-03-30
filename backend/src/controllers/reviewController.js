@@ -31,6 +31,22 @@ export const getReviews = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+export const getReviewsByMovie = async (req, res) => {
+  const { movie_id } = req.params;
+  try {
+    const reviews = await prisma.review.findMany({
+      where: {
+        movie_id: parseInt(movie_id),
+      },
+      include: {
+        comments: true,
+      },
+    });
+    res.json(reviews);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
 
 export const deleteReview = async (req, res) => {
   const { id } = req.params;
