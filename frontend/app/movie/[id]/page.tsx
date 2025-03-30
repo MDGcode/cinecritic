@@ -4,7 +4,7 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import { ArrowLeft, Calendar, Clock, Loader2, Star, Tag } from "lucide-react";
 import ReviewForm from "@/app/components/review-form";
-
+import { ReviewsList } from "@/app/components/review-list";
 // Define interfaces for the movie data structure
 interface Genre {
   id: number;
@@ -289,6 +289,7 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
   return (
     <Suspense fallback={<LoadingState />}>
       <MovieContent id={id} />
+      <ReviewsList movieId={Number(id)} />
     </Suspense>
   );
 }

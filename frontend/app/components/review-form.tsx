@@ -46,6 +46,8 @@ export default function ReviewForm({ movieId }: ReviewFormProps) {
             rating: numericRating,
             title,
             content,
+            displayname: user.displayName,
+            photoUrl: user.photoURL,
           }),
         }
       );
