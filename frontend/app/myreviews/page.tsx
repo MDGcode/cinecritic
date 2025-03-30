@@ -20,14 +20,16 @@ interface Review {
 export default function MyReviews() {
   const [reviews, setReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [userId, setUserId] = useState<string | null>(null); // Assuming you have the userId available
-  const [deleteLoading, setDeleteLoading] = useState<number | null>(null); // New state to track which review is being deleted
+  const [userId, setUserId] = useState<string | null>(null);
+  const [deleteLoading, setDeleteLoading] = useState<number | null>(null);
   const { user } = UserAuth(); // Firebase user object
 
   useEffect(() => {
-    const currentUserId = user?.uid;
-    setUserId(currentUserId ?? null);
-    console.log(user);
+    if (user) {
+      setUserId(user.uid);
+    } else {
+      setUserId(null);
+    }
   }, [user]);
 
   // Fetch user reviews
@@ -53,7 +55,7 @@ export default function MyReviews() {
 
   // Function to delete a review
   const deleteReview = async (reviewId: number) => {
-    setDeleteLoading(reviewId); // Set loading state for the specific review
+    setDeleteLoading(reviewId);
     try {
       const response = await fetch(
         `https://4b73e3ed-b20c-40d1-9a6b-bf6be4287be5.eu-central-1.cloud.genez.io/api/reviews/${reviewId}`,
@@ -63,7 +65,6 @@ export default function MyReviews() {
       );
 
       if (response.ok) {
-        // Remove the deleted review from the UI
         setReviews((prevReviews) =>
           prevReviews.filter((review) => review.review_id !== reviewId)
         );
@@ -73,9 +74,21 @@ export default function MyReviews() {
     } catch (error) {
       console.error("Error deleting review:", error);
     } finally {
-      setDeleteLoading(null); // Reset the loading state
+      setDeleteLoading(null);
     }
   };
+
+  // If the user is not logged in, show a message
+  if (!user) {
+    return (
+      <div className="container mx-auto py-8 px-4 text-center">
+        <h2 className="text-2xl font-bold mb-4">You need to log in</h2>
+        <p className="text-gray-600">
+          Please sign in to view and manage your reviews.
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto py-8 px-4">
