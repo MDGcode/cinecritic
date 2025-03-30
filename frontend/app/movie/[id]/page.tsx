@@ -3,6 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { ArrowLeft, Calendar, Clock, Loader2, Star, Tag } from "lucide-react";
+import ReviewForm from "@/app/components/review-form";
 
 // Define interfaces for the movie data structure
 interface Genre {
@@ -277,6 +278,7 @@ async function MovieContent({ id }: { id: string }) {
             )}
         </div>
       </div>
+      <ReviewForm movieId={movie.id} />
     </div>
   );
 }
