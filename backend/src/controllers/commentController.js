@@ -3,10 +3,16 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 export const createComment = async (req, res) => {
-  const { user_id, review_id, comment } = req.body;
+  const { user_id, review_id, comment, displayname, photoUrl } = req.body;
   try {
     const newComment = await prisma.comment.create({
-      data: { user_id, review_id, comment },
+      data: {
+        user_id,
+        review_id,
+        comment,
+        displayname,
+        photoUrl,
+      },
     });
     res.json(newComment);
   } catch (error) {

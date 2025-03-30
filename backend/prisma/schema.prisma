@@ -21,6 +21,8 @@ model Review {
   rating    Int
   title     String
   content   String
+  displayname String   
+  photoUrl    String   
   comments  Comment[]
 }
 
@@ -29,5 +31,7 @@ model Comment {
   user_id    String
   review_id  Int
   comment    String
+  displayname String  
+  photoUrl   String  
   review     Review @relation(fields: [review_id], references: [review_id], onDelete: Cascade)
 }

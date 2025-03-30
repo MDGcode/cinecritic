@@ -3,10 +3,19 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 export const createReview = async (req, res) => {
-  const { movie_id, user_id, rating, title, content } = req.body;
+  const { movie_id, user_id, rating, title, content, displayname, photoUrl } =
+    req.body;
   try {
     const review = await prisma.review.create({
-      data: { movie_id, user_id, rating, title, content },
+      data: {
+        movie_id,
+        user_id,
+        rating,
+        title,
+        content,
+        displayname,
+        photoUrl,
+      },
     });
     res.json(review);
   } catch (error) {
