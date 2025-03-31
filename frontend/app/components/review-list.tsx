@@ -20,7 +20,7 @@ interface Review {
   content: string;
   photoUrl: string;
   displayname: string;
-  comments: Comment[]; // Add this line
+  comments: Comment[];
 }
 export function ReviewsList({ movieId }: { movieId: number }) {
   const [reviews, setReviews] = useState<Review[]>([]);

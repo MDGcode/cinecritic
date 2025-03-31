@@ -6,6 +6,7 @@ import Link from "next/link";
 import { Loader2 } from "lucide-react";
 import { UserAuth } from "../context/AuthContext";
 import { usePathname } from "next/navigation";
+
 interface Review {
   review_id: number;
   movie_id: number;
@@ -44,6 +45,7 @@ export default function ReviewCard({
   const [postingComment, setPostingComment] = useState<boolean>(false);
   const { user } = UserAuth();
   const pathname = usePathname();
+
   useEffect(() => {
     async function fetchMoviePoster() {
       try {
@@ -114,8 +116,8 @@ export default function ReviewCard({
       if (!response.ok) throw new Error("Failed to post comment");
 
       const newCommentData: Comment = await response.json();
-      setComments((prev) => [...prev, newCommentData]); // Append new comment
-      setNewComment(""); // Clear input
+      setComments((prev) => [...prev, newCommentData]);
+      setNewComment("");
     } catch (error) {
       console.error("Error posting comment:", error);
     } finally {
@@ -124,38 +126,40 @@ export default function ReviewCard({
   }
 
   return (
-    <div className="border p-4 rounded-lg shadow-md">
-      <div className="flex items-start gap-6">
-        {/* Left side: Movie poster */}
-        <div className="flex-shrink-0">
+    <div className="border p-3 sm:p-4 rounded-lg shadow-md bg-white">
+      <div className="flex flex-col sm:flex-row items-start gap-4 sm:gap-6">
+        {/* Movie poster - centered on mobile, left-aligned on larger screens */}
+        <div className="w-full sm:w-auto flex justify-center sm:justify-start sm:flex-shrink-0 mb-4 sm:mb-0">
           {loading ? (
-            <Loader2 className="animate-spin h-8 w-8 text-blue-500" />
+            <div className="w-[100px] h-[150px] flex items-center justify-center">
+              <Loader2 className="animate-spin h-8 w-8 text-blue-500" />
+            </div>
           ) : (
             <Image
               src={posterUrl || "/placeholder.svg"}
               alt={review.title}
               width={100}
               height={150}
-              className="object-cover rounded-md"
+              className="object-cover rounded-md shadow-sm"
             />
           )}
         </div>
 
-        {/* Right side: Review content */}
-        <div className="flex-1">
-          <div className="flex items-center gap-4 mb-4">
-            {/* Display user's photo and name */}
-            <div className="flex-shrink-0 mr-4">
+        {/* Review content */}
+        <div className="flex-1 w-full">
+          {/* User info and delete button */}
+          <div className="flex items-center gap-2 mb-3 sm:mb-4">
+            <div className="flex-shrink-0">
               <Image
                 src={review.photoUrl || "/placeholder-profile.png"}
                 alt={review.displayname || "User"}
-                width={40}
-                height={40}
+                width={36}
+                height={36}
                 className="rounded-full"
               />
             </div>
-            <div>
-              <p className="font-semibold">
+            <div className="flex-1 min-w-0">
+              <p className="font-semibold truncate">
                 {review.displayname || "Anonymous"}
               </p>
             </div>
@@ -163,34 +167,46 @@ export default function ReviewCard({
             {pathname === "/myreviews" && (
               <button
                 onClick={() => deleteReview(review.review_id)}
-                className="text-red-500 ml-auto cursor-pointer"
-                disabled={deleteLoading === review.review_id} // Disable button if delete is in progress
+                className="text-red-500 cursor-pointer"
+                disabled={deleteLoading === review.review_id}
+                aria-label="Delete review"
               >
                 {deleteLoading === review.review_id ? (
                   <Loader2 className="animate-spin h-5 w-5 text-red-500" />
                 ) : (
-                  <Trash size={20} />
+                  <Trash size={18} />
                 )}
               </button>
             )}
           </div>
-          <h3 className="text-xl font-semibold mb-2">{review.title}</h3>
-          <p className="mb-4">{review.content}</p>
-          <div className="flex items-center mb-4">
-            <span className="ml-4 text-yellow-500">{review.rating} / 10</span>
+
+          {/* Review title and content */}
+          <h3 className="text-lg sm:text-xl font-semibold mb-2">
+            {review.title}
+          </h3>
+          <p className="mb-3 text-sm sm:text-base">{review.content}</p>
+
+          {/* Rating */}
+          <div className="flex items-center mb-3">
+            <div className="bg-yellow-100 text-yellow-800 px-2 py-1 rounded-md text-sm font-medium">
+              Rating: {review.rating}/10
+            </div>
           </div>
+
+          {/* Movie details link */}
           <Link
             href={`/movie/${review.movie_id}`}
-            className="text-blue-600 hover:underline mt-4 block text-center"
+            className="text-blue-600 hover:underline text-sm inline-block mb-4"
           >
             View Movie Details
           </Link>
 
           {/* Comments Section */}
-          <div className="mt-6">
-            <h4 className="text-lg font-semibold">Comments</h4>
+          <div className="mt-4 pt-4 border-t border-gray-200">
+            <h4 className="text-md sm:text-lg font-semibold mb-2">Comments</h4>
+
             {comments.length > 0 ? (
-              <div className="mt-2 space-y-2">
+              <div className="mt-2 space-y-3 max-h-[300px] overflow-y-auto pr-1">
                 {comments.map((comment) => (
                   <div
                     key={comment.comment_id}
@@ -199,39 +215,42 @@ export default function ReviewCard({
                     <Image
                       src={comment.photoUrl || "/placeholder-profile.png"}
                       alt={comment.displayname || "User"}
-                      width={30}
-                      height={30}
-                      className="rounded-full"
+                      width={28}
+                      height={28}
+                      className="rounded-full mt-1"
                     />
-                    <div className="bg-gray-100 p-2 rounded-lg">
-                      <p className="font-semibold">{comment.displayname}</p>
-                      <p>{comment.comment}</p>
+                    <div className="bg-gray-50 p-2 rounded-lg flex-1">
+                      <p className="font-semibold text-sm">
+                        {comment.displayname}
+                      </p>
+                      <p className="text-sm break-words">{comment.comment}</p>
                     </div>
                   </div>
                 ))}
               </div>
             ) : (
-              <p className="text-gray-500 mt-2">No comments yet.</p>
+              <p className="text-gray-500 text-sm mt-2">No comments yet.</p>
             )}
 
             {/* Add Comment Form */}
-            <div className="mt-4 flex items-center gap-2">
+            <div className="mt-3 flex items-center gap-2">
               <input
                 type="text"
                 placeholder="Add a comment..."
                 value={newComment}
                 onChange={(e) => setNewComment(e.target.value)}
-                className="flex-1 p-2 border rounded-md"
+                className="flex-1 p-2 text-sm border rounded-md"
               />
               <button
                 onClick={handleAddComment}
-                className="bg-blue-500 text-white px-3 py-1 rounded-md"
+                className="bg-blue-500 text-white p-2 rounded-md flex-shrink-0"
                 disabled={postingComment}
+                aria-label="Send comment"
               >
                 {postingComment ? (
                   <Loader2 className="animate-spin h-5 w-5" />
                 ) : (
-                  <Send size={20} />
+                  <Send size={18} />
                 )}
               </button>
             </div>
