@@ -66,6 +66,15 @@ export default function ReviewForm({ movieId }: ReviewFormProps) {
       setLoading(false);
     }
   }
+  if (!user) {
+    return (
+      <div className="container mx-auto py-8 px-4 mt-4 text-center">
+        <h2 className="text-2xl font-bold mb-4">
+          You need to be logged in to leave a review
+        </h2>
+      </div>
+    );
+  }
 
   return (
     <form

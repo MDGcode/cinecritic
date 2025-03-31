@@ -70,7 +70,7 @@ export function ReviewsList({ movieId }: { movieId: number }) {
   }
 
   return (
-    <div className="mt-8 px-4 sm:px-6 md:px-8 max-w-4xl mx-auto">
+    <div className="mt-8 px-4 sm:px-6 md:px-8 max-w-4xl mx-auto mb-10">
       <h2 className="text-2xl font-bold mb-6 text-gray-800 flex items-center">
         <MessageCircle className="mr-2 h-6 w-6 text-blue-600" />
         User Reviews
