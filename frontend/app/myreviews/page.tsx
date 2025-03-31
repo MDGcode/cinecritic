@@ -38,7 +38,7 @@ export default function MyReviews() {
       async function fetchReviews() {
         try {
           const response = await fetch(
-            `https://4b73e3ed-b20c-40d1-9a6b-bf6be4287be5.eu-central-1.cloud.genez.io/api/reviews/user/${userId}`
+            `${process.env.NEXT_PUBLIC_BACKEND_API}/api/reviews/user/${userId}`
           );
           const data: Review[] = await response.json();
           setReviews(data);

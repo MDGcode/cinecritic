@@ -34,7 +34,7 @@ export default function ReviewForm({ movieId }: ReviewFormProps) {
 
     try {
       const response = await fetch(
-        "https://4b73e3ed-b20c-40d1-9a6b-bf6be4287be5.eu-central-1.cloud.genez.io/api/reviews",
+        `${process.env.NEXT_PUBLIC_BACKEND_API}/api/reviews`,
         {
           method: "POST",
           headers: {
